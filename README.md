@@ -199,3 +199,24 @@ Also adding our route for /clicked and giving it a proper response.
   <div>Now I am a div and not a button anymore returned from the server</div>
 ))
 ```
+
+### Adding some css (but don't make it too hard because we are ING developers and not used to css)
+For this we are going to use tailwindcss (https://tailwindcss.com/) and they
+also have a nice import which we can add between our <head></head> tags. Note:
+Don't use in a production environment.
+```html
+<script src="https://cdn.tailwindcss.com"></script>
+```
+and add some css to our components and/or page (play around with this as much 
+as you like.
+```html
+        <body class="flex w-full h-screen justify-center items-center">
+          <button class="border rounded" hx-post="/clicked" hx-swap="outerHTML">
+            Click Me
+          </button>
+        </body>
+
+        <div class="text-blue-600">
+          Now I am a div and not a button anymore returned from the server
+        </div>
+```
