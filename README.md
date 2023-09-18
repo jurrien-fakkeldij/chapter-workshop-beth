@@ -2,15 +2,16 @@
 
 ## BETH Stack
 ### BUN
-https://bun.sh/
+- https://bun.sh/
+
 
 ### Elysia
-https://elysiajs.com/
+- https://elysiajs.com/
 
 ### Turso / sqllite
-https://turso.tech/
-https://bun.sh/docs/api/sqlite
+- https://turso.tech/
+- https://bun.sh/docs/api/sqlite
 
 ### HTMX
-https://htmx.org/
+- https://htmx.org/
 
