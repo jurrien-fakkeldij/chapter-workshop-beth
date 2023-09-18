@@ -1,7 +1,7 @@
 # BETH Stack workshop
 
 ## Disclaimer
-I got inspiration (read: blatently copied his video, with a bit of my own flavour) from youtuber Ethan Niser at https://www.youtube.com/watch?v=cpzowDDJj24
+I got inspiration (read: blatently copied the content in his video, with a bit of my own flavour) from youtuber Ethan Niser at https://www.youtube.com/watch?v=cpzowDDJj24
 Just wanted to create a follow everything in a md for my team at work to easily copy and paste the code without having to type everything.
 Watch the video, it is all explained there as well I don't want to take credit for this whatsoever.
 
@@ -210,13 +210,13 @@ Don't use in a production environment.
 and add some css to our components and/or page (play around with this as much 
 as you like.
 ```html
-        <body class="flex w-full h-screen justify-center items-center">
-          <button class="border rounded" hx-post="/clicked" hx-swap="outerHTML">
-            Click Me
-          </button>
-        </body>
+<body class="flex w-full h-screen justify-center items-center">
+  <button class="border rounded" hx-post="/clicked" hx-swap="outerHTML">
+    Click Me
+  </button>
+</body>
 
-        <div class="text-blue-600">
-          Now I am a div and not a button anymore returned from the server
-        </div>
+<div class="text-blue-600">
+  Now I am a div and not a button anymore returned from the server
+</div>
 ```
