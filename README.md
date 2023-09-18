@@ -1,5 +1,10 @@
 # BETH Stack workshop
 
+## Disclaimer
+I got inspiration (read: blatently copied his video, with a bit of my own flavour) from youtuber Ethan Niser at https://www.youtube.com/watch?v=cpzowDDJj24
+Just wanted to create a follow everything in a md for my team at work to easily copy and paste the code without having to type everything.
+Watch the video, it is all explained there as well I don't want to take credit for this whatsoever.
+
 ## BETH Stack
 ### BUN
 - https://bun.sh/
@@ -109,4 +114,62 @@ const app = new Elysia()
   .use(html())
   .get("/", ({html}) => html(baseHtml))
   .listen(3000);
+```
+
+### Bring in JSX
+We are adding JSX to this so we can create typed html or components.
+To do so we want to add typed-html as a devDependency.
+```bash
+bun add -d typed-html
+```
+Then we want to adjust our tsconfig.json file to use the following.
+```json
+{
+...
+    "jsx": "react",
+    "jsxFactory": "elements.createElement",
+...
+}
+```
+Rename our index.ts to index.tsx.
+```bash
+mv index.ts index.tsx
+```
+
+Open index.tsx and import elements.
+```javascript
+import * as elements from "typed-html";
+```
+
+Then we need to make our base html variable a component with children using typed-html and and the children subset after the head tag.
+```javascript
+const BaseHtml = ({children}: elements.Children) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chapter Workshop</title>
+</head>
+${children}
+</html > `;
+```
+and update our route to use this new component.
+```javascript
+.get("/", ({ html }) => html(
+  <BaseHtml>
+  <body>
+    <h1>Hello World from Elysia Dom!</h1> I am a html document with a component.
+  </body>
+  </BaseHtml>
+))
+```
+
+This should now be reflected in your webpage at http://localhost:3000/
+
+## Adding HTMX
+Now that we have setup our webserver to serve hypertext media content and we can use components within our application it is time to setup and add htmx.
+We will add the following to our BaseHtml component between the <head></head> tag.
+```html
+<script src="https://unpkg.com/htmx.org@1.9.5"></script>
 ```
