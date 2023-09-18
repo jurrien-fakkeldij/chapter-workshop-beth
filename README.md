@@ -141,7 +141,8 @@ Open index.tsx and import elements.
 import * as elements from "typed-html";
 ```
 
-Then we need to make our base html variable a component with children using typed-html and and the children subset after the head tag.
+Then we need to make our base html variable a component with children using 
+typed-html and and the children subset after the head tag.
 ```javascript
 const BaseHtml = ({children}: elements.Children) => `
 <!DOCTYPE html>
@@ -168,8 +169,33 @@ and update our route to use this new component.
 This should now be reflected in your webpage at http://localhost:3000/
 
 ## Adding HTMX
-Now that we have setup our webserver to serve hypertext media content and we can use components within our application it is time to setup and add htmx.
+Now that we have setup our webserver to serve hypertext media content and we 
+can use components within our application it is time to setup and add htmx.
 We will add the following to our BaseHtml component between the <head></head> tag.
 ```html
-<script src="https://unpkg.com/htmx.org@1.9.5"></script>
+<script src="https://unpkg.com/htmx.org@1.9.5" integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO" crossorigin="anonymous"></script>
+```
+
+### Extra 
+There is a vs-code extension called htmx-tags, no idea if it actually works 
+because I have not tried it yet.
+
+### HTMX Test
+In the body of our BaseHTML component we are going to create a button with a 
+hx-post function going to /clicked using hx-swap set to outerhtml to replace 
+the target (button) element with the returning response (swap the entire thing).
+```html
+<BaseHtml>
+  <body>
+    <button hx-post="/clicked" hx-swap="outerHTML">
+      Click Me
+    </button>
+  </body>
+</BaseHtml>
+```
+Also adding our route for /clicked and giving it a proper response.
+```javascript
+.post("/clicked", () => (
+  <div>Now I am a div and not a button anymore returned from the server</div>
+))
 ```
