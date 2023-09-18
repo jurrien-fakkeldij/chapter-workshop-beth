@@ -78,7 +78,6 @@ From now on we can also watch our files so we don't have restart if we change ou
 bun run --watch index.ts
 ```
 
-
 ### Add html to Elysia
 To add the html plugin for Elysia so we can actually display html (this is important for the last part htmx) we need to add the html plugin.
 ```bash
@@ -104,7 +103,7 @@ const baseHtml = `
 <body><h1>Hello World from Elysia Dom!</h1> I am a html document </body>
 </html > `;
 ```
-and update the app and router to the following
+and update the app and router to the following to use the html plugin and the baseHtml
 ```javascript
 const app = new Elysia()
   .use(html())
