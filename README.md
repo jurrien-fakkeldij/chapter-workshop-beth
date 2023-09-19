@@ -387,3 +387,11 @@ It will now resemble something like below
     hx-target="closest div">X</button>
 </div>
 ```
+This is something different, meaning the delete endpoint actually doesn't return
+an element or anything actually and hx-swap actually has a delete value it does
+not make sense in this case. We only want to change the element if the call is 
+successful and the delete value deletes it no matter what. An by returning an
+empty response the component actually gets overwritten with nothing and therefor
+we have what we want. Look at http://localhost:3000 and try to delete something 
+in order to get it back we have to reload the whole application
+
