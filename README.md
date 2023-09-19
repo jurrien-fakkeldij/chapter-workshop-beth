@@ -424,9 +424,9 @@ We will start with creating a post endpoint /todos
 ```
 
 Notice the lastID variable let's create that just above our database (array) and
-use the id that you have set last.
+use the id+1 that you have set last.
 ```typescript
-let lastID = 4;
+let lastID = 5;
 ```
 
 Now on to creating the form component so we can actually add the todo.
@@ -465,6 +465,14 @@ Bun has built-in sqllite functionality. Let's use it.
 ### Create database tables and setup script.
 We want to move some files around to make sure we can comfortably add more files
 without everything on the route folder.
+
+First add some dependencies
+
+```bash
+bun add drizzle-orm
+bun add -d drizzle-kit
+```
+
 create a src folder
 ```bash
 mkdir src
