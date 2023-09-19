@@ -501,7 +501,7 @@ export const todos = sqliteTable("todos", {
 export type Todo = InferModel<typeof todos>;
 ```
 
-To connect to our database we are creating an index.ts file to do so.
+To connect to our database we are creating an index.ts file to do so also in the db folder
 ```typescript
 import { drizzle, BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
 import { Database } from 'bun:sqlite';
@@ -515,3 +515,68 @@ sqlite.run(
 export const db: BunSQLiteDatabase = drizzle(sqlite, { schema, logger: true });
 ```
 
+### Update src/index.tsx to use our database
+Now we need to remove our current database (array) and use this database we are creating.
+
+First add our imports that we just created.
+
+```typescript
+import { todos, Todo } from "./db/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+```
+
+Then for getting the data from our db in our routes
+```typescript
+.post(
+    "/todos/toggle/:id",
+    async ({ params }) => {
+        const oldTodo = await db
+            .select()
+            .from(todos)
+            .where(eq(todos.id, params.id))
+
+        const newTodo = await db
+            .update(todos)
+            .set({ completed: !oldTodo?.pop()?.completed })
+            .where(eq(todos.id, params.id))
+            .returning()
+
+        return <TodoItem {...newTodo.pop()} />;
+    },
+    {
+        params: t.Object({
+            id: t.Numeric(),
+        }),
+    })
+.delete(
+    "/todos/:id",
+    async ({ params }) => {
+        await db.delete(todos).where(eq(todos.id, params.id));
+    },
+    {
+        params: t.Object({
+            id: t.Numeric(),
+        }),
+    }
+)
+.post(
+    "/todos",
+    async ({ body }) => {
+        if (body.content.length === 0) {
+            throw new Error("Content cannot be empty");
+        }
+        const newTodo = await db.insert(todos).values({ content: body.content }).returning();
+        return <TodoItem {...newTodo.pop()} />;
+    },
+    {
+        body: t.Object({
+            content: t.String(),
+        }),
+    }
+)
+```
+
+And don't forget to remove our current database (array) and the inserts for that database.
+We should now have an app for a todo list that persists through server resets (don't overwrite the database).
+Test this at http://localhost:3000/
