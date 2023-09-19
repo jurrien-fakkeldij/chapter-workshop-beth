@@ -500,26 +500,18 @@ export const todos = sqliteTable("todos", {
 
 export type Todo = InferModel<typeof todos>;
 ```
-To make sure drizzle knows where everything is we have to create a drizzle
-config file (drizzle.config.ts) on the root.
-
-```
-import type { Config } from "drizzle-kit";
-
-export default {
-  schema: "./src/db/schema.ts",
-  verbose: true,
-  strict: true,
-} satisfies Config;
-```
 
 To connect to our database we are creating an index.ts file to do so.
 ```typescript
 import { drizzle, BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
 import { Database } from 'bun:sqlite';
 import * as schema from "./schema";
- 
-const sqlite = new Database('sqlite.db');
-export const db: BunSQLiteDatabase = drizzle(sqlite, {schema, logger:true});
+
+const sqlite = new Database('todo.db', { create: true });
+sqlite.run(
+    "CREATE TABLE IF NOT EXISTS todos (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, content TEXT NOT NULL, completed INTEGER NOT NULL);"
+);
+
+export const db: BunSQLiteDatabase = drizzle(sqlite, { schema, logger: true });
 ```
 
