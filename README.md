@@ -442,6 +442,7 @@ function TodoForm() {
       <button type="submit">Add</button>
     </form>
   );
+}
 ```
 
 and add this form to our TodoList component.
