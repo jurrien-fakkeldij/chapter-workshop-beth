@@ -172,7 +172,9 @@ and update our route to use this new component.
 
 This should now be reflected in your webpage at http://localhost:3000/
 
-## Adding HTMX
+## Introducing HTMX
+
+### Adding HTMX
 Now that we have setup our webserver to serve hypertext media content and we 
 can use components within our application it is time to setup and add htmx.
 We will add the following to our BaseHtml component between the <head></head> tag.
@@ -180,11 +182,11 @@ We will add the following to our BaseHtml component between the <head></head> ta
 <script src="https://unpkg.com/htmx.org@1.9.5" integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO" crossorigin="anonymous"></script>
 ```
 
-### Extra 
+#### Extra 
 There is a vs-code extension called htmx-tags, no idea if it actually works 
 because I have not tried it yet.
 
-## HTMX Test
+### HTMX Test
 In the body of our BaseHTML component we are going to create a button with a 
 hx-post function going to /clicked using hx-swap set to outerhtml to replace 
 the target (button) element with the returning response (swap the entire thing).
@@ -206,7 +208,7 @@ Also adding our route for /clicked and giving it a proper response.
 It should now work on http://localhost:3000/ displaying a button first and when
 clicking on it it changes to the div we created in our post.
 
-### Adding some css (but don't make it too hard because we are ING developers and not used to css)
+#### Adding some css (but don't make it too hard because we are ING developers and not used to css)
 For this we are going to use tailwindcss (https://tailwindcss.com/) and they
 also have a nice import which we can add between our <head></head> tags. Note:
 Don't use in a production environment.
@@ -228,6 +230,8 @@ as you like).
 ```
 
 ## Let's create a todo app
+
+### Add objects and components
 Let's use all these tools we installed now to actually build an app.
 First let's create the Todo type. We just add all of these to our index.tsx file
 (we don't have to overcomplicate things).
@@ -287,6 +291,99 @@ innerHTML with the received response. To checkout other triggers please visit
 (https://htmx.org/attributes/hx-trigger/). You can view the result at 
 http://localhost:3000/
 
+### CRUD
 Now we are going to create the CRUD (create, read, update, delete) functionality.
+
+#### Update (why not start with update it is only 3rd in the acronym)
 Let's start with update, to be able to toggle whether or not a todo is actually
 done.
+For this we need to add a post call to our router/
+```typescript
+.post(
+  "/todos/toggle/:id",
+    ({ params }) => {
+      const todo = db.find((todo) => todo.id === params.id);
+      if (todo) {
+        todo.completed = !todo.completed;
+        return <TodoItem {...todo} />;
+      }
+    },
+    {
+      params: t.Object({
+      id: t.Numeric(),
+    }),
+})
+```
+We introduced a few new things here. The additional argument/object in the post
+function this defines the input validation for the route parameter (:id). The t
+object is imported from elysia.
+```typescript
+import { Elysia, t } from "elysia";
+```
+This t.Numeric() function will automatically try to coerce any string to a number 
+(unsure how safe this actually is).
+
+Now we can update our TodoItem component to send a post when the input is 
+toggled and we want to swap our entire component when we get the response not 
+just the input itself. It will look as follows.
+```html
+<div id={id.toString()} class="flex flex-row space-x-3">
+  <p>${content}</p>
+  <input
+   type="checkbox"
+    checked={completed}
+    hx-post={`/todos/toggle/${id}`}
+    hx-target="closest div"
+    hx-swap="outerHTML"
+  />
+  <button class="text-red-500">X</button>
+</div>
+```
+Notice the hx-target and hx-swap parameters. hx-target can target any dom 
+element using css selectors and other search methods. For more info on hx-target 
+please visit https://htmx.org/attributes/hx-target/. hx-swap is set to outerHTML 
+to replace the entire target element with the response. For more information on 
+hx-swap visit https://htmx.org/attributes/hx-swap/
+
+Now when we reload the page the state will remain the same and not change after 
+a reload. Check this at http://localhost:3000/
+
+#### Delete (because well it is the next in the acronym right?)
+To be able to delete we are going to have to add a delete function to the router 
+(lucky for us this framework is built for humans and not computers, if you don't 
+understand this I am assuming you did not open the elysia webpage).
+```typescript
+.delete(
+  "/todos/:id",
+  ({ params }) => {
+      const todo = db.find((todo => todo.id === params.id));
+      if (todo) {
+        db.splice(db.indexOf(todo), 1);
+      }
+  },
+  {
+    params: t.Object({
+      id: t.Numeric(),
+    }),
+  }
+)
+```
+And now we have to update our component to actually call this delete endpoint.
+It will now resemble something like below
+```html
+<div id={id.toString()} class="flex flex-row space-x-3">
+  <p>${content}</p>
+  <input
+   type="checkbox"
+    checked={completed}
+    hx-post={`/todos/toggle/${id}`}
+    hx-target="closest div"
+    hx-swap="outerHTML"
+  />
+  <button 
+    class="text-red-500"
+    hx-delete={`/todos/${id}`}
+    hx-swap="outerHTML"
+    hx-target="closest div">X</button>
+</div>
+```
