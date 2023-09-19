@@ -287,4 +287,6 @@ innerHTML with the received response. To checkout other triggers please visit
 (https://htmx.org/attributes/hx-trigger/). You can view the result at 
 http://localhost:3000/
 
-
+Now we are going to create the CRUD (create, read, update, delete) functionality.
+Let's start with update, to be able to toggle whether or not a todo is actually
+done.
