@@ -247,3 +247,44 @@ const db : Todo[] = [
   { id: 4, content: "profit", completed: false }
 ]
 ```
+Now create the TodoItem and TodoList component for rendering
+```typescript
+function TodoItem({ content, completed, id }: Todo) {
+    return(
+      <div class="flex flex-row space-x-3">
+        <p>{content}</p>
+        <input type="checkbox" checked={completed} />
+        <button class="text-red-500">X</button>
+      </div>
+    );
+}
+
+function TodoList({todos} : {todos: Todo[]}) {
+    return (
+      <div>
+      { todos.map((todo) => (
+        <TodoItem {...todo} />
+      ))}
+      </div>
+    );
+}
+```
+Now we need to display this on the code, let's just get the body to load this 
+using the features of htmx.
+```html
+<BaseHtml>
+  <body   
+    class="flex w-full h-screen justify-center items-center"
+    hx-get="/todos"
+    hx-trigger="load"
+    hx-swap="innerHTML"
+  />
+</BaseHtml>
+```
+This does a few things, it uses hx-get to do a get call (check network tab),
+it is triggered when the body component is loaded and swaps the entire 
+innerHTML with the received response. To checkout other triggers please visit 
+(https://htmx.org/attributes/hx-trigger/). You can view the result at 
+http://localhost:3000/
+
+
