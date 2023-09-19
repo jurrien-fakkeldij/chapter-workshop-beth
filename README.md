@@ -417,7 +417,7 @@ We will start with creating a post endpoint /todos
   },
   {
     body: t.Object({
-      conent: t.String(),
+      content: t.String(),
     }),
   }
 ),
