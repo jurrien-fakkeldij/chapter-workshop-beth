@@ -528,6 +528,10 @@ import { eq } from "drizzle-orm";
 
 Then for getting the data from our db in our routes
 ```typescript
+.get("/todos", async () => {
+    const data = await db.select().from(todos);
+    return <TodoList todos={data} />;
+})
 .post(
     "/todos/toggle/:id",
     async ({ params }) => {
