@@ -294,7 +294,7 @@ http://localhost:3000/
 ### CRUD
 Now we are going to create the CRUD (create, read, update, delete) functionality.
 
-#### Update (why not start with update it is only 3rd in the acronym)
+#### Update (why not start with update it is only 3rd in the acronym, create is really hard and we already have read sort of)
 Let's start with update, to be able to toggle whether or not a todo is actually
 done.
 For this we need to add a post call to our router/
@@ -395,3 +395,62 @@ empty response the component actually gets overwritten with nothing and therefor
 we have what we want. Look at http://localhost:3000 and try to delete something 
 in order to get it back we have to reload the whole application
 
+#### Create 
+Creating new todo's, why would we want this. Then our todolist can only grow right?
+Anyway from CRUD perspective it is there and we need to implement it otherwise it is only RUD.
+
+We will start with creating a post endpoint /todos
+```typescript
+.post(
+  "/todos",
+  ({ body }) => {
+    if (body.content.length === 0) {
+        throw new Error("Content cannot be empty");
+    }
+    const newTodo = {
+        id: lastID++,
+        content: body.content,
+        completed: false,
+    };
+    db.push(newTodo);
+    return <TodoItem {...newTodo} />;
+  },
+  {
+    body: t.Object({
+      conent: t.String(),
+    }),
+  }
+),
+```
+
+Notice the lastID variable let's create that just above our database (array) and
+use the id that you have set last.
+```typescript
+let lastID = 4;
+```
+
+Now on to creating the form component so we can actually add the todo.
+```typescript
+function TodoForm() {
+  return (
+    <form
+      class="flex flex-row space-x-3"
+      hx-post="/todos"
+      hx-swap="beforebegin"
+    >
+      <input type="text" name="content" class="border border-black" />
+      <button type="submit">Add</button>
+    </form>
+  );
+```
+
+and add this form to our TodoList component.
+```html
+<div>
+  {todos.map((todo) => (
+    <TodoItem {...todo} />
+  ))}
+  <TodoForm />
+</div>
+```
+And now we should have full CRUD functionality. Let's test at http://localhost:3000
