@@ -454,3 +454,63 @@ and add this form to our TodoList component.
 </div>
 ```
 And now we should have full CRUD functionality. Let's test at http://localhost:3000
+
+## Database
+Well since the state of our application is now changing everytime we reset our 
+application (nothing will happen if we just leave the laptop open right with our
+billion user app running on it) we want to add a database. Bun to the rescue again.
+Bun has built-in sqllite functionality. Let's use it.
+
+### Create database tables and setup script.
+We want to move some files around to make sure we can comfortably add more files
+without everything on the route folder.
+create a src folder
+```bash
+mkdir src
+```
+move our index.tsx into this folder. (don't forget to change your startup command)
+```bash
+mv index.tsx ./src/index.tsx
+```
+Then we create a db folder inside the source folder
+```bash
+cd src
+mkdir db
+```
+
+In the db folder we will create the schema.ts file.
+```typescript
+import { InferModel } from "drizzle-orm";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+
+export const todos = sqliteTable("todos", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  content: text("content").notNull(),
+  completed: integer("completed", { mode: "boolean" }).notNull().default(false),
+});
+
+export type Todo = InferModel<typeof todos>;
+```
+To make sure drizzle knows where everything is we have to create a drizzle
+config file (drizzle.config.ts) on the root.
+
+```
+import type { Config } from "drizzle-kit";
+
+export default {
+  schema: "./src/db/schema.ts",
+  verbose: true,
+  strict: true,
+} satisfies Config;
+```
+
+To connect to our database we are creating an index.ts file to do so.
+```typescript
+import { drizzle, BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
+import { Database } from 'bun:sqlite';
+import * as schema from "./schema";
+ 
+const sqlite = new Database('sqlite.db');
+export const db: BunSQLiteDatabase = drizzle(sqlite, {schema, logger:true});
+```
+
