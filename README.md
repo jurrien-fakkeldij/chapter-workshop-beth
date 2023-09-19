@@ -584,3 +584,57 @@ Then for getting the data from our db in our routes
 And don't forget to remove our current database (array) and the inserts for that database.
 We should now have an app for a todo list that persists through server resets (don't overwrite the database).
 Test this at http://localhost:3000/
+
+## Extra content unlocked
+
+### Turso
+So at the beginning we talked about what the BETH stack was and we missed the T, well not really I think using the builtin sqlite from Bun served us well here.
+However I think we should still use it and I will go over the edits needed to connect to Turso.
+I already created a database with an existing table, so this means that we will all have a similar view on the state once we all connect.
+This will bring it's own misery (don't delete something that doesn't exist).
+
+Start with adding new dependencies since we won't be using the bun sqlite drivers but now libsql drivers.
+```bash
+bun add @libsql/client
+```
+
+I am not going to go into creating this database, you can watch the YT video for that if you like.
+We do need to create some environment variables we can later also use to store as secrets in a pipeline (also in the video not in this course).
+Let's create a .env file in the root of the project.
+```bash
+DATABASE_URL=GET_THIS_FROM_ME_TO_CONNECT_TO_DB
+DATABASE_AUTH_TOKEN=GET_THIS_FROM_ME_FOR_MAGIC
+```
+
+and create a drizzle.config.ts file to tell drizzle where to connect to
+```typescript
+import type { Config } from "drizzle-kit";
+
+export default {
+    schema: "./src/db/schema.ts",
+    driver: "turso",
+    dbCredentials: {
+        url: process.env.DATABASE_URL,
+        authToken: process.env.DATABASE_AUTH_TOKEN,
+    },
+    verbose: true,
+    strict: true
+} satisfies Config;
+```
+We don't have to change the schema, we do have to change our index.ts in the db folder.
+We are connecting using a different driver and library.
+```typescript
+import { drizzle, LibSQLDatabase } from 'drizzle-orm/libsql';
+import { createClient } from '@libsql/client'
+import * as schema from "./schema";
+
+
+const client = createClient({
+    url: process.env.DATABASE_URL!,
+    authToken: process.env.DATABASE_AUTH_TOKEN,
+});
+
+export const db: LibSQLDatabase<typeof schema> = drizzle(client, { schema, logger: true });
+```
+And voila you should now be connecting to the Database I setup earlier and see the items in this todo database on http://localhost:3000
+
