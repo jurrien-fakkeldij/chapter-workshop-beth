@@ -184,7 +184,7 @@ We will add the following to our BaseHtml component between the <head></head> ta
 There is a vs-code extension called htmx-tags, no idea if it actually works 
 because I have not tried it yet.
 
-### HTMX Test
+## HTMX Test
 In the body of our BaseHTML component we are going to create a button with a 
 hx-post function going to /clicked using hx-swap set to outerhtml to replace 
 the target (button) element with the returning response (swap the entire thing).
@@ -225,4 +225,25 @@ as you like).
 <div class="text-blue-600">
   Now I am a div and not a button anymore returned from the server
 </div>
+```
+
+## Let's create a todo app
+Let's use all these tools we installed now to actually build an app.
+First let's create the Todo type. We just add all of these to our index.tsx file
+(we don't have to overcomplicate things).
+``` typescript
+type Todo {
+  id: number;
+  content: string
+  completed: boolean
+}
+```
+and create our inmemory database (just an array for now)
+```typescript
+const db : Todo[] = [
+  { id: 1, content: "Learn to create and setup the BETH stack.", completed: true },
+  { id: 2, content: "Create workshop", completed: true },
+  { id: 3, content: "??", completed: false },
+  { id: 4, content: "profit", completed: false }
+]
 ```
