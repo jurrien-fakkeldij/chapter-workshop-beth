@@ -19,7 +19,11 @@ Now I hear some of you think: "didn't we do this with jsp / php pages already?".
 Some others will say: "Will we ever use this in our daily jobs?". Probably not, doesn't make it unfun to try this out right?
 
 ### BUN
-- https://bun.sh/
+Bun is an all-in-one toolkit for JavaScript and TypeScript apps. It ships as a single executable called bun​.
+
+At its core is the Bun runtime, a fast JavaScript runtime designed as a drop-in replacement for Node.js. It's written in Zig and powered by JavaScriptCore under the hood, dramatically reducing startup times and memory usage.
+
+Sounds like a bold statement and for those who have not followed the discussions online for this, the verdict is not yet complete. Nevertheless we are going to play around with it. You can find more information on their website https://bun.sh/.
 
 ### Elysia
 - https://elysiajs.com/
