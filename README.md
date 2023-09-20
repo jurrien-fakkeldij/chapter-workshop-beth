@@ -26,14 +26,34 @@ At its core is the Bun runtime, a fast JavaScript runtime designed as a drop-in 
 Sounds like a bold statement and for those who have not followed the discussions online for this, the verdict is not yet complete. Nevertheless we are going to play around with it. You can find more information on their website https://bun.sh/.
 
 ### Elysia
-- https://elysiajs.com/
+Ergonomic Framework for Humans
+
+TypeScript framework supercharged by Bun with End-to-End Type Safety, unified type system and outstanding developer experience
+
+Sounds like express, but then for humans? Anyway it is quite new and as it states it is supercharged by Bun we want to use it right. You can find also more information on this at https://elysiajs.com/
 
 ### Turso / sqllite
-- https://turso.tech/
-- https://bun.sh/docs/api/sqlite
+SQLite is a C-language library that implements a small, fast, self-contained, high-reliability, full-featured, SQL database engine. SQLite is the most used database engine in the world. SQLite is built into all mobile phones and most computers and comes bundled inside countless other applications that people use every day.
+The SQLite file format is stable, cross-platform, and backwards compatible and the developers pledge to keep it that way through the year 2050. SQLite database files are commonly used as containers to transfer rich content between systems and as a long-term archival format for data. There are over 1 trillion (1e12) SQLite databases in active use.
+
+This is not new, but very useful for proof-of-concepts and comes out of the box with Bun. For more information on how bun uses it https://bun.sh/docs/api/sqlite or the documentation itself https://www.sqlite.org/index.html.
+
+Turso is an edge-hosted, distributed database based on libSQL, an open-source and open-contribution fork of SQLite. It was designed to minimize query latency for applications where queries come from anywhere in the world. In particular, it works well with edge functions provided by cloud platforms such as CloudFlare, Netlify, and Vercel, by putting your data geographically close to the code that accesses it.
+
+This sounds interesting, let's just use it. Due to the length of this course this is the last part and only if we have time for this.
+For more information please check out https://turso.tech/.
 
 ### HTMX
-- https://htmx.org/
+htmx gives you access to AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext. 
+
+Sounds cool but why would we want this if we have javascript and rest? 
+
+Well their motivation is:
+- Why should only <a> and <form> be able to make HTTP requests?
+- Why should only click & submit events trigger them?
+- Why should only GET & POST methods be available?
+- Why should you only be able to replace the entire screen?
+By removing these arbitrary constraints, htmx completes HTML as a hypertext. You can find more information about this on https://htmx.org/.
 
 ## Setup BUN
 
