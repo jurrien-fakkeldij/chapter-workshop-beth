@@ -230,13 +230,11 @@ When looking at http://localhost:3000 (assuming you restarted the server with th
 
 We now are ready to use Bun to create our application and run our Elysia server to serve our html components and templates. Now it is time to add htmx into this brewing pot we call an application.
 
-THIS IS WHERE I LEFT WHEN EDDITING THIS PAGE!!!
-
 ## Introducing HTMX
 
 ### Adding HTMX
-Now that we have setup our webserver to serve hypertext media content and we 
-can use components within our application it is time to setup and add htmx.
+Now that we have setup our application to serve html components and templates it is time to add htmx.
+
 We will add the following to our BaseHtml component between the <head></head> tag.
 ```html
 <script src="https://unpkg.com/htmx.org@1.9.5" integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO" crossorigin="anonymous"></script>
@@ -246,10 +244,10 @@ We will add the following to our BaseHtml component between the <head></head> ta
 There is a vs-code extension called htmx-tags, no idea if it actually works 
 because I have not tried it yet.
 
+We can now use all the goodies htmx has to offer us on our components. Let's try them out.
+
 ### HTMX Test
-In the body of our BaseHTML component we are going to create a button with a 
-hx-post function going to /clicked using hx-swap set to outerhtml to replace 
-the target (button) element with the returning response (swap the entire thing).
+In the body of our BaseHTML component we are going to create a button with a hx-post function. We are going to use hx-swap to replace the target (button) element with the returning response (swap the entire thing, which is done with the outerHTML). If you want to know more about hx-swap visit https://htmx.org/attributes/hx-swap/.
 ```html
 <BaseHtml>
   <body>
@@ -259,14 +257,15 @@ the target (button) element with the returning response (swap the entire thing).
   </body>
 </BaseHtml>
 ```
-Also adding our route for /clicked and giving it a proper response.
+Now we need to add the `POST /clicked` to our router to create the response with html to replace the button.
 ```javascript
 .post("/clicked", () => (
   <div>Now I am a div and not a button anymore returned from the server</div>
 ))
 ```
-It should now work on http://localhost:3000/ displaying a button first and when
-clicking on it it changes to the div we created in our post.
+Now it should work on http://localhost:3000. It should display the button we created and when clicking it, it should show the div we added.
+
+CHANGED TEXT UNTIL HERE
 
 #### Adding some css (but don't make it too hard because we are ING developers and not used to css)
 For this we are going to use tailwindcss (https://tailwindcss.com/) and they
