@@ -56,7 +56,11 @@ Well their motivation is:
 
 By removing these arbitrary constraints, htmx completes HTML as a hypertext. You can find more information about this on https://htmx.org/.
 
+Now let's see how we set all these up and actually build an application with this. Sorry this is going to be another Todo app all over again, but with blazingly fast startup times and less memory usage.
+
 ## Setup BUN
+
+To make sure we can run our application in bun we need to setup a server in bun and make sure this architecture runs on our machines. This part will cover installing and setting up our server using only bun.
 
 ### Installing BUN 
 ```bash 
@@ -64,10 +68,12 @@ curl -fsSL https://bun.sh/install | bash
 ```
 
 ### Setup server
-First we need to initialize bun by executing the following command and go through all the questions
+First we need to tell bun to init in the folder we want to create our application in by executing the following command in the root and go through all the questions
 ```bash
+mkdir chapter-workshop-beth && cd chapter-workshop-beth
 bun init
 ```
+
 ```bash
 bun init helps you get started with a minimal project and tries to guess sensible defaults. Press ^C anytime to quit
 package name (chapter-workshop-beth):
@@ -79,61 +85,66 @@ Done! A package.json file was saved in the current directory.
 + tsconfig.json (for editor auto-complete)
 ```
 
-This sets up everything for us to start. We can run the server now with
+This sets up everything for us to start our bun server. We can run the server now with the `run` command.
 ```bash
 bun run index.ts
 ```
-and should show a command line log line with Hello via Bun!
+Running this should show a log line on the command line with `Hello via Bun!` (or something like this, it should not show any errors).
+
+#### Watch/Hot
+We can also watch our files so we don't have restart our server if we change our ts / tsx (later) files with the `--watch` or `--hot` argument.
+```bash
+bun run --watch index.ts
+bun run --hot index.ts
+```
+
+Having setup bun we can continue with the next step for our application.
+For this we are going to add Elysia in the mix.
 
 ## Use Elysia
+We are going to use Elysia to serve our html(x) content and setup our other routes for `GET`, `POST` or any other method. First we have to add this to our application and then we can setup our routes for our application.
 
 ### Add Elysia
-We can simply add Elysia using Bun
+We can simply add Elysia using bun with the command below.
 ```bash
 bun add elysia
 ```
-To add it to our application we need to open index.ts and change it to the following.
-```javascript
+See how fast bun actually installs this, is this not amazing (compared to NODE that is)?
+
+To add it to our application we need to open index.ts and change the entire content to the following:
+```typescript
 import { Elysia } from "elysia";
 
 const app = new Elysia().get("/", () => "Hello world from Elysia").listen(3000);
 console.log(`Elysia is running at http://${app.server?.hostname}:${app.server?.port}`);
 ```
 
-and then run it
-
+After we saved our file, we can now run our new application using the `run` command again or if you have used the `watch` or `hot` argument it should automatically have reloaded.
 ```bash
 bun run index.ts
 ```
-Should result in
+It should now display the following log line on the command line.
 ```bash
 Elysia is running at http://localhost:3000
 ```
-and showing you the webpage at http://localhost:3000 with Hello World from Elysia.
+We have successfully added Elysia to our application. We can double check this by going to http://localhost:3000 (or any port that you put in) and it should show you Hello World from Elysia.
 
-Great now we have added Elysia as our backend for displaying pages and be our rest server.
-We are not able to use html itself yet within our application (try if you like), but will result in the page displaying the text with just the tags.
-
-#### Extra
-From now on we can also watch our files so we don't have restart if we change our ts / tsx (later) files.
-```bash
-bun run --watch index.ts
-```
+Sadly we are not able to server html yet at this moment with Elysia, if you try to add html as output it will just show up as text on the browser (try this if you don't believe me). For this we need to add another plugin/library (welcome to front-end land, where we can just add another plugin or library for everything).
 
 ### Add html to Elysia
 To add the html plugin for Elysia so we can actually display html (this is important for the last part htmx) we need to add the html plugin.
 ```bash
 bun add @elysia/html
 ```
+To make sure this works we are going to add a constant base html variable to our index.ts file and use this.
 
-To make sure this works we are going to add a constant base html to our index.ts file and use this.
-Add the import
-
-```javascript
+Make sure we can use the html functionality within our application, to do this we add the following import statement to the top of our file.
+```typescript
 import { html } from "@elysiajs/html";
 ```
-add the constant base html
-```javascript
+
+Add the constant base html variable at the end of the file (or anywhere you like, something about hoisting right?).
+```typescript
 const baseHtml = `
 <!DOCTYPE html>
 <html lang="en">
@@ -145,21 +156,28 @@ const baseHtml = `
 <body><h1>Hello World from Elysia Dom!</h1> I am a html document </body>
 </html > `;
 ```
-and update the app and router to the following to use the html plugin and the baseHtml
-```javascript
+
+Now we can update the router on the app to display this baseHtml variable by changing the router code to the following. 
+```typescript
 const app = new Elysia()
   .use(html())
   .get("/", ({html}) => html(baseHtml))
   .listen(3000);
 ```
+From now on I am going to assume you have used the `watch` or `hot` parameters if not you have to rerun the `run` command everytime we look at the webpage otherwise your changes will not be reflected.
+So when we look at http://localhost:3000 it should show our html page as a html page and not just all the tags as text.
 
-### Bring in JSX
-We are adding JSX to this so we can create typed html or components.
-To do so we want to add typed-html as a devDependency.
+Now we want to use templating right? Makes our lives a lot easier for this we again need to drop in another dependency (plugin/library).
+
+### Bring in typed-html
+We are adding typed-html to this so we can create templates, so it is easier to maintain if we can create our own components and not have to write the same html code every time.
+To do so we want to add typed-html as a devDependency with the command below.
 ```bash
 bun add -d typed-html
 ```
-Then we want to adjust our tsconfig.json file to use the following.
+Again just marvel in the speed bun offers us here.
+
+Then we want to adjust our tsconfig.json file to use the following two lines (if they exists replace them otherwise add them in the compilerOptions object).
 ```json
 {
 ...
@@ -168,18 +186,24 @@ Then we want to adjust our tsconfig.json file to use the following.
 ...
 }
 ```
-Rename our index.ts to index.tsx.
+Although we're configuring the compiler to use React, this is not what is being used. Instead, we redirect all jsx element to typed-html's elements.createElement.
+
+We do have to rename our index.ts to index.tsx.
 ```bash
 mv index.ts index.tsx
 ```
 
-Open index.tsx and import elements.
-```javascript
+We also have to make sure we use this new file in our run command.
+```bash
+bun run --watch index.tsx
+```
+
+In our index.tsx file we now have to add our just added dev dependency using an import statement.
+```typescript
 import * as elements from "typed-html";
 ```
 
-Then we need to make our base html variable a component with children using 
-typed-html and and the children subset after the head tag.
+Now we are going to change our baseHtml variable to be a component and use templating. Change the current `const baseHtml` variable in your code to the following.
 ```javascript
 const BaseHtml = ({children}: elements.Children) => `
 <!DOCTYPE html>
@@ -192,18 +216,25 @@ const BaseHtml = ({children}: elements.Children) => `
 ${children}
 </html > `;
 ```
-and update our route to use this new component.
+We now made it a function accepting a list of children (html objects) to display after the head tag and returning this.
+
+To use this new `BaseHtml` component we have to update our `GET /` route to the following.
 ```javascript
 .get("/", ({ html }) => html(
   <BaseHtml>
-  <body>
-    <h1>Hello World from Elysia Dom!</h1> I am a html document with a component.
-  </body>
+    <body>
+      <h1>Hello World from Elysia Dom!</h1> I am a html document with a component.
+    </body>
   </BaseHtml>
 ))
 ```
+We changed the html to use the `<BaseHtml>` tag and added plain html (as a child, whoo xml sytnax).
 
-This should now be reflected in your webpage at http://localhost:3000/
+When looking at http://localhost:3000 (assuming you restarted the server with the new .tsx file) this should reflect the changes we made.
+
+We now are ready to use Bun to create our application and run our Elysia server to serve our html components and templates. Now it is time to add htmx into this brewing pot we call an application.
+
+THIS IS WHERE I LEFT WHEN EDDITING THIS PAGE!!!
 
 ## Introducing HTMX
 
