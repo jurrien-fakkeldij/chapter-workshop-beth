@@ -1,13 +1,9 @@
 # BETH Stack workshop
 
 ## Disclaimer
-I got inspiration (read: blatently copied the content in his video, with a bit 
-of my own flavour) from youtuber Ethan Niser at 
-https://www.youtube.com/watch?v=cpzowDDJj24
-Just wanted to create a follow everything in a md for my team at work to easily 
-copy and paste the code without having to type everything.
-Watch the video, it is all explained there as well I don't want to take credit 
-for this whatsoever.
+I got inspiration (read: blatently copied the contents of this video, with a bit of my own flavour) from youtuber Ethan Niser at https://www.youtube.com/watch?v=cpzowDDJj24.
+
+Just wanted to create a follow everything in a md for my team at work to easily copy and paste the code without having to type everything. Watch the video, it is all explained there as well I don't want to take credit for this whatsoever.
 
 ## BETH Stack
 So what is the BETH Stack and why do we want to use it? 
