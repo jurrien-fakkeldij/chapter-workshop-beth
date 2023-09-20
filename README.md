@@ -53,6 +53,7 @@ Well their motivation is:
 - Why should only click & submit events trigger them?
 - Why should only GET & POST methods be available?
 - Why should you only be able to replace the entire screen?
+
 By removing these arbitrary constraints, htmx completes HTML as a hypertext. You can find more information about this on https://htmx.org/.
 
 ## Setup BUN
