@@ -50,8 +50,8 @@ Sounds cool but why would we want this if we have javascript and rest?
 
 Well their motivation is:
 - Why should only `<a>` and `<form>` be able to make HTTP requests?
-- Why should only click & submit events trigger them?
-- Why should only GET & POST methods be available?
+- Why should only `click` & `submit` events trigger them?
+- Why should only `GET` & `POST` methods be available?
 - Why should you only be able to replace the entire screen?
 
 By removing these arbitrary constraints, htmx completes HTML as a hypertext. You can find more information about this on https://htmx.org/.
