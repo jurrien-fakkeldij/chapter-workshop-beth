@@ -49,7 +49,7 @@ htmx gives you access to AJAX, CSS Transitions, WebSockets and Server Sent Event
 Sounds cool but why would we want this if we have javascript and rest? 
 
 Well their motivation is:
-- Why should only "<a>" and "<form>" be able to make HTTP requests?
+- Why should only `<a>` and `<form>` be able to make HTTP requests?
 - Why should only click & submit events trigger them?
 - Why should only GET & POST methods be available?
 - Why should you only be able to replace the entire screen?
