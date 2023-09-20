@@ -180,10 +180,10 @@ Again just marvel in the speed bun offers us here.
 Then we want to adjust our tsconfig.json file to use the following two lines (if they exists replace them otherwise add them in the compilerOptions object).
 ```json
 {
-...
-    "jsx": "react",
-    "jsxFactory": "elements.createElement",
-...
+    "compilerOptions": {
+        "jsx": "react",
+        "jsxFactory": "elements.createElement"
+    }
 }
 ```
 Although we're configuring the compiler to use React, this is not what is being used. Instead, we redirect all jsx element to typed-html's elements.createElement.
