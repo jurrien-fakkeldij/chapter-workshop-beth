@@ -287,7 +287,7 @@ Further on there are css classes included in the components, you can ofcourse us
 </div>
 ```
 
-# INPUT TOTAL FILE HERE UP UNTIL NOW
+`TODO: INPUT TOTAL FILE HERE UP UNTIL NOW`
 
 ## Let's create a todo app
 Now we have all our tools and libraries in place (well we don't have a database yet, but we will get to this later) let's create our actual Todo Application.
@@ -352,7 +352,7 @@ This does a few things:
 - Then swaps the entire innerHTML with the received response.
 
 To checkout other triggers please visit (https://htmx.org/attributes/hx-trigger/).  
-Now because we are calling the `GET /todos` resource we need to add this in our router.
+Now because we are calling the `GET /todos` resource we need to add this in our router (By now I am assuming you know how to add this to the router, if not ask).
 ```typescript
 .get("/todos", async () => {
     return <TodoList todos={db} />;
@@ -360,16 +360,13 @@ Now because we are calling the `GET /todos` resource we need to add this in our 
 ```
 You can view the result at http://localhost:3000/
 
-LEFT OFF HERE!!
-
 ### CRUD
 Now we are going to create the CRUD (create, read, update, delete) functionality.
 
 #### Update 
-Why not start with update it is only 3rd in the acronym, create is really hard and we already have read sort of.
-Let's start with update, to be able to toggle whether or not a todo is actually
-done.
-For this we need to add a post call to our router/
+Why not start with update it is only 3rd in the acronym, create is really hard and we already have read sort of.  
+To be able to toggle whether or not a todo is actually done we need to create a `POST /todos/toggle/:id` route.
+Let's add this to our router as below.
 ```typescript
 .post(
   "/todos/toggle/:id",
@@ -382,22 +379,17 @@ For this we need to add a post call to our router/
     },
     {
       params: t.Object({
-      id: t.Numeric(),
-    }),
-})
+        id: t.Numeric(),
+      }),
+    }
+)
 ```
-We introduced a few new things here. The additional argument/object in the post
-function this defines the input validation for the route parameter (:id). The t
-object is imported from elysia.
+We introduced a few new things here let's explain them. The additional argument/object in the `POST` function defines the input validation for the route parameter (:id). We import the t object for `t.Object` and `t.Numeric` from elysia as shown below.
 ```typescript
 import { Elysia, t } from "elysia";
 ```
-This t.Numeric() function will automatically try to coerce any string to a number 
-(unsure how safe this actually is).
-
-Now we can update our TodoItem component to send a post when the input is 
-toggled and we want to swap our entire component when we get the response not 
-just the input itself. It will look as follows.
+This `t.Numeric()` function will automatically try to coerce any string to a number (unsure how safe this actually is, but let's not worry about that in our workshop/proof of concept).  
+Now we can update our TodoItem component to send this post request when the input is toggled. When we get the response we want to swap our entire component with this response. Below is the code to achieve this in htmx.
 ```html
 <div id={id.toString()} class="flex flex-row space-x-3">
   <p>${content}</p>
@@ -411,19 +403,14 @@ just the input itself. It will look as follows.
   <button class="text-red-500">X</button>
 </div>
 ```
-Notice the hx-target and hx-swap parameters. hx-target can target any dom 
-element using css selectors and other search methods. For more info on hx-target 
-please visit https://htmx.org/attributes/hx-target/. hx-swap is set to outerHTML 
-to replace the entire target element with the response. For more information on 
-hx-swap visit https://htmx.org/attributes/hx-swap/
-
-Now when we reload the page the state will remain the same and not change after 
-a reload. Check this at http://localhost:3000/
+Notice the hx-target and hx-swap parameters. 
+hx-target can target any dom element using css selectors and other search methods in this case closest div will select the parent div of the input. For more info on hx-target please visit https://htmx.org/attributes/hx-target/.  
+hx-swap is set to outerHTML to replace the entire target element with the response. For more information on hx-swap visit https://htmx.org/attributes/hx-swap/  
+To test our new code we want to start with a fresh page, then tick off some todos and refresh the page and watch the magic, the todos are still ticked.
 
 #### Delete (because well it is the next in the acronym right?)
-To be able to delete we are going to have to add a delete function to the router 
-(lucky for us this framework is built for humans and not computers, if you don't 
-understand this I am assuming you did not open the elysia webpage).
+To be able to delete we are going to have to add a `DELETE /todos/:id` function to the router (lucky for us this framework is built for humans and not computers, if you don't understand this I am assuming you did not open the elysia webpage).
+This change is fairly easy and looks like the code below.
 ```typescript
 .delete(
   "/todos/:id",
@@ -440,8 +427,7 @@ understand this I am assuming you did not open the elysia webpage).
   }
 )
 ```
-And now we have to update our component to actually call this delete endpoint.
-It will now resemble something like below
+And now we have to update our component to actually call this `DELETE` method as shown below.
 ```html
 <div id={id.toString()} class="flex flex-row space-x-3">
   <p>${content}</p>
@@ -459,19 +445,13 @@ It will now resemble something like below
     hx-target="closest div">X</button>
 </div>
 ```
-This is something different, meaning the delete endpoint actually doesn't return
-an element or anything actually and hx-swap actually has a delete value it does
-not make sense in this case. We only want to change the element if the call is 
-successful and the delete value deletes it no matter what. An by returning an
-empty response the component actually gets overwritten with nothing and therefor
-we have what we want. Look at http://localhost:3000 and try to delete something 
-in order to get it back we have to reload the whole application
+This is something different, meaning the `DELETE` method doesn't return an element or anything for that matter. hx-swap actually has a `delete` value we can use, but it does not make sense in this case. We only want to change the element if the call is successful and the `delete` value deletes it whether or not the call is completed successfully.  
+By returning an empty response the component actually gets overwritten with nothing (read: empty) and therefor it works like we want only to be deleted if the response actually is correct (meaning nothing in this case).  
+Look at http://localhost:3000 and try to delete something in order to get it back we have to reload the whole application (rerun `bun run --watch index.tsx`)
 
 #### Create 
-Creating new todo's, why would we want this. Then our todolist can only grow right?
-Anyway from CRUD perspective it is there and we need to implement it otherwise it is only RUD.
-
-We will start with creating a post endpoint /todos
+Why in gods name would we want to create new todos? I mean the shorter our todo lists get the better right?
+We will start with creating a `POST /todos` route to handle the creation of new todos.
 ```typescript
 .post(
   "/todos",
@@ -495,13 +475,12 @@ We will start with creating a post endpoint /todos
 ),
 ```
 
-Notice the lastID variable let's create that just above our database (array) and
-use the id+1 that you have set last.
+Notice the lastID variable, we don't have that yet. Let's create that just above our database (array) and use the id+1 that you have set last.
 ```typescript
 let lastID = 5;
 ```
 
-Now on to creating the form component so we can actually add the todo.
+Now on to creating the form component so we can actually add the todo. We can add this to end of our file.
 ```typescript
 function TodoForm() {
   return (
@@ -517,7 +496,7 @@ function TodoForm() {
 }
 ```
 
-and add this form to our TodoList component.
+Now we also have to add this TodoForm component to our TodoList component so it will always show up at the bottom of the list.
 ```html
 <div>
   {todos.map((todo) => (
@@ -526,40 +505,35 @@ and add this form to our TodoList component.
   <TodoForm />
 </div>
 ```
-And now we should have full CRUD functionality. Let's test at http://localhost:3000
+And now we should have full CRUD functionality in our application. Let's test and play around at http://localhost:3000
+
+Notice how if we restart our server everything is reset. For this, we need to introduce a database.
 
 ## Database
-Well since the state of our application is now changing everytime we reset our 
-application (nothing will happen if we just leave the laptop open right with our
-billion user app running on it) we want to add a database. Bun to the rescue again.
-Bun has built-in sqllite functionality. Let's use it.
+Well since the state of our application is now reverting to the initial state every time we reset our application we want to add a database. Bun to the rescue again. Bun has built-in SQLite functionality. Let's use it.
 
-### Create database tables and setup script.
-We want to move some files around to make sure we can comfortably add more files
-without everything on the route folder.
-
-First add some dependencies
-
+### Create database tables and set up script.
+We want to move some files around to make sure we can comfortably add more files without everything on the root folder.  
+Let's start with creating a src folder.
+```bash
+mkdir src
+```
+After this we move our `index.tsx` into this folder. Please don't forget to change the startup command `bun run --watch ./src/index.tsx`.
+```bash
+mv index.tsx ./src/index.tsx
+```
+Then we create a db folder inside the `src` folder to hold our database files.
+```bash
+cd src
+mkdir db
+```
+Let's add some database dependencies. In this case, we are going to use drizzle to connect to our database. Drizzle ORM is a TypeScript ORM for SQL databases designed with maximum type safety in mind. For more information check out https://orm.drizzle.team/.
 ```bash
 bun add drizzle-orm
 bun add -d drizzle-kit
 ```
 
-create a src folder
-```bash
-mkdir src
-```
-move our index.tsx into this folder. (don't forget to change your startup command)
-```bash
-mv index.tsx ./src/index.tsx
-```
-Then we create a db folder inside the source folder
-```bash
-cd src
-mkdir db
-```
-
-In the db folder we will create the schema.ts file.
+In the `db` folder we will create the `schema.ts` file with the following content.
 ```typescript
 import { InferModel } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
@@ -572,8 +546,9 @@ export const todos = sqliteTable("todos", {
 
 export type Todo = InferModel<typeof todos>;
 ```
+This is to describe our `todos` table and `todo` type later in our application.
 
-To connect to our database we are creating an index.ts file to do so also in the db folder
+To connect to our database we are creating an `index.ts` file to do so also in the `db` folder with the content below.
 ```typescript
 import { drizzle, BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
 import { Database } from 'bun:sqlite';
@@ -586,19 +561,20 @@ sqlite.run(
 
 export const db: BunSQLiteDatabase = drizzle(sqlite, { schema, logger: true });
 ```
+Here we just setup the database from bun and the file name `todo.db`. We also enable drizzle with the database, schema and logger true (so we can see what the queries are doing).
+Also notice the `sqlite run` function to create a table if it does not exists.
 
 ### Update src/index.tsx to use our database
-Now we need to remove our current database (array) and use this database we are creating.
+Now we need to remove our current database (array) and use the database we have created.
 
-First add our imports that we just created.
-
+To do this we need to add the imports that we just created.
 ```typescript
 import { todos, Todo } from "./db/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 ```
 
-Then for getting the data from our db in our routes
+For actually changing the logic to deal with our database we need to update most of our routes. These routes all need to be using the new database and have queries attached to them. In the end, it will look like the code below.
 ```typescript
 .get("/todos", async () => {
     const data = await db.select().from(todos);
@@ -652,33 +628,30 @@ Then for getting the data from our db in our routes
     }
 )
 ```
-
-And don't forget to remove our current database (array) and the inserts for that database.
-We should now have an app for a todo list that persists through server resets (don't overwrite the database).
+And don't forget to remove our current database (array) and the inserts for that database. If you don't there will probably be a naming issue where db is already used.
+We should now have an application for a todo list that persists through server resets (don't overwrite the database).
 Test this at http://localhost:3000/
 
 ## Extra content unlocked
 
 ### Turso
-So at the beginning we talked about what the BETH stack was and we missed the T, well not really I think using the builtin sqlite from Bun served us well here.
-However I think we should still use it and I will go over the edits needed to connect to Turso.
-I already created a database with an existing table, so this means that we will all have a similar view on the state once we all connect.
-This will bring it's own misery (don't delete something that doesn't exist).
-
-Start with adding new dependencies since we won't be using the bun sqlite drivers but now libsql drivers.
+So at the beginning, we talked about what the BETH stack was and so far we missed the T, well not really. Using the builtin SQLite from Bun served us well here. Having said this, I think we should still try it and I will go over the edits needed to connect to Turso.  
+I already created a database with an existing table. This means that we will all have a similar view of the state once we all connect. This will bring its own misery (don't delete something that doesn't exist), but we won't fix these here.  
+Start with adding new dependencies since we won't be using the bun SQLite drivers but now libsql drivers.
 ```bash
 bun add @libsql/client
 ```
 
-I am not going to go into creating this database, you can watch the YT video for that if you like.
+I am not going to go into creating this database, you can watch the Youtube video for that if you like.
 We do need to create some environment variables we can later also use to store as secrets in a pipeline (also in the video not in this course).
-Let's create a .env file in the root of the project.
+Let's create a `.env` file in the root of the project.
 ```bash
 DATABASE_URL=GET_THIS_FROM_ME_TO_CONNECT_TO_DB
 DATABASE_AUTH_TOKEN=GET_THIS_FROM_ME_FOR_MAGIC
 ```
 
-and create a drizzle.config.ts file to tell drizzle where to connect to
+`TODO CHECK IF THE NEXT PASSAGE IS NEEDED!`
+We als need to create a drizzle.config.ts file in the root of the project to tell drizzle where to connect to using the earlier created environment variables.
 ```typescript
 import type { Config } from "drizzle-kit";
 
@@ -693,8 +666,9 @@ export default {
     strict: true
 } satisfies Config;
 ```
-We don't have to change the schema, we do have to change our index.ts in the db folder.
-We are connecting using a different driver and library.
+`END TODO` 
+
+We don't have to change the schema, we do have to change our `index.ts` in the db folder. We are connecting using a different driver and library and we are using the earlier created environment variables.
 ```typescript
 import { drizzle, LibSQLDatabase } from 'drizzle-orm/libsql';
 import { createClient } from '@libsql/client'
@@ -708,5 +682,4 @@ const client = createClient({
 
 export const db: LibSQLDatabase<typeof schema> = drizzle(client, { schema, logger: true });
 ```
-And voila you should now be connecting to the Database I setup earlier and see the items in this todo database on http://localhost:3000
-
+And voila you should now be connecting to the database that was setup earlier and see the items in this todo database on http://localhost:3000
