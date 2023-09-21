@@ -265,17 +265,16 @@ Now we need to add the `POST /clicked` to our router to create the response with
 ```
 Now it should work on http://localhost:3000. It should display the button we created and when clicking it, it should show the div we added.
 
-CHANGED TEXT UNTIL HERE
-
 #### Adding some css (but don't make it too hard because we are ING developers and not used to css)
-For this we are going to use tailwindcss (https://tailwindcss.com/) and they
-also have a nice import which we can add between our <head></head> tags. Note:
-Don't use in a production environment.
+For this we are going to use tailwindcss (https://tailwindcss.com/) and they also have a nice import which we can add between our <head></head> tags.  
+**Note:Don't use in a production environment.**  
+Below you can find the script tag we want to add to the content of our baseHtml variable, below the htmx include script.
 ```html
 <script src="https://cdn.tailwindcss.com"></script>
 ```
-and add some css to our components and/or page (play around with this as much 
-as you like).
+After adding this script tag we included tailwindcss and we can use it to add css classes to our components and/or page (play around with this as much 
+as you like).  
+Further on there are css classes included in the components, you can ofcourse use your own as well if you really like so.
 ```html
 <body class="flex w-full h-screen justify-center items-center">
   <button class="border rounded" hx-post="/clicked" hx-swap="outerHTML">
@@ -288,12 +287,13 @@ as you like).
 </div>
 ```
 
+# INPUT TOTAL FILE HERE UP UNTIL NOW
+
 ## Let's create a todo app
+Now we have all our tools and libraries in place (well we don't have a database yet, but we will get to this later) let's create our actual Todo Application.
 
 ### Add objects and components
-Let's use all these tools we installed now to actually build an app.
-First let's create the Todo type. We just add all of these to our index.tsx file
-(we don't have to overcomplicate things).
+To have todo's we need to have a todo type, we can add this to the bottom of the file below our baseHtml in our index.tsx file.
 ``` typescript
 type Todo {
   id: number;
@@ -301,7 +301,8 @@ type Todo {
   completed: boolean
 }
 ```
-and create our inmemory database (just an array for now)
+
+Now our objects need to be saved somewhere (no, still not the database), so we are creating below our type our "database". 
 ```typescript
 const db : Todo[] = [
   { id: 1, content: "Learn to create and setup the BETH stack.", completed: true },
@@ -310,7 +311,8 @@ const db : Todo[] = [
   { id: 4, content: "profit", completed: false }
 ]
 ```
-Now create the TodoItem and TodoList component for rendering
+
+We have our "database" and our type, now we can create our todo component and todo list component. We can add these below our "database" code.
 ```typescript
 function TodoItem({ content, completed, id }: Todo) {
     return(
@@ -332,8 +334,8 @@ function TodoList({todos} : {todos: Todo[]}) {
     );
 }
 ```
-Now we need to display this on the code, let's just get the body to load this 
-using the features of htmx.
+
+Now we need to display this on the front end. We can actually get our body to load this using htmx and should look like the below code.
 ```html
 <BaseHtml>
   <body   
@@ -344,16 +346,27 @@ using the features of htmx.
   />
 </BaseHtml>
 ```
-This does a few things, it uses hx-get to do a get call (check network tab),
-it is triggered when the body component is loaded and swaps the entire 
-innerHTML with the received response. To checkout other triggers please visit 
-(https://htmx.org/attributes/hx-trigger/). You can view the result at 
-http://localhost:3000/
+This does a few things:
+- It uses hx-get to do a `GET /todos` call (you can check this network tab).
+- This call it is triggered when the body component is loaded.
+- Then swaps the entire innerHTML with the received response.
+
+To checkout other triggers please visit (https://htmx.org/attributes/hx-trigger/).  
+Now because we are calling the `GET /todos` resource we need to add this in our router.
+```typescript
+.get("/todos", async () => {
+    return <TodoList todos={db} />;
+})
+```
+You can view the result at http://localhost:3000/
+
+LEFT OFF HERE!!
 
 ### CRUD
 Now we are going to create the CRUD (create, read, update, delete) functionality.
 
-#### Update (why not start with update it is only 3rd in the acronym, create is really hard and we already have read sort of)
+#### Update 
+Why not start with update it is only 3rd in the acronym, create is really hard and we already have read sort of.
 Let's start with update, to be able to toggle whether or not a todo is actually
 done.
 For this we need to add a post call to our router/
