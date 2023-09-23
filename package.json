@@ -9,6 +9,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@elysiajs/html": "^0.7.0",
     "elysia": "^0.7.12"
   }
 }
