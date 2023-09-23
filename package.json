@@ -2,7 +2,8 @@
   "name": "chapter-workshop-beth",
   "module": "index.ts",
   "devDependencies": {
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "typed-html": "^3.0.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
