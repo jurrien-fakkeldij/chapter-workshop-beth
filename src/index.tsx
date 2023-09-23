@@ -1,6 +1,9 @@
 import { Elysia, t } from "elysia";
 import { html } from "@elysiajs/html";
 import * as elements from "typed-html";
+import { todos, Todo } from "./db/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 const app = new Elysia()
     .use(html())
@@ -15,35 +18,34 @@ const app = new Elysia()
         </BaseHtml>
     ))
     .get("/todos", async () => {
-        return <TodoList todos={db} />;
+        const data = await db.select().from(todos);
+        return <TodoList todos={data} />;
     })
-    .post("/clicked", () => (
-        <div class="text-blue-600">
-            Now I am a div and not a button anymore returned from the server
-        </div>
-    ))
     .post(
         "/todos/toggle/:id",
-        ({ params }) => {
-            const todo = db.find((todo) => todo.id === params.id);
-            if (todo) {
-                todo.completed = !todo.completed;
-                return <TodoItem {...todo} />;
-            }
+        async ({ params }) => {
+            const oldTodo = await db
+                .select()
+                .from(todos)
+                .where(eq(todos.id, params.id))
+
+            const newTodo = await db
+                .update(todos)
+                .set({ completed: !oldTodo?.pop()?.completed })
+                .where(eq(todos.id, params.id))
+                .returning()
+
+            return <TodoItem {...newTodo.pop()} />;
         },
         {
             params: t.Object({
                 id: t.Numeric(),
             }),
-        }
-    )
+        })
     .delete(
         "/todos/:id",
-        ({ params }) => {
-            const todo = db.find((todo => todo.id === params.id));
-            if (todo) {
-                db.splice(db.indexOf(todo), 1);
-            }
+        async ({ params }) => {
+            await db.delete(todos).where(eq(todos.id, params.id));
         },
         {
             params: t.Object({
@@ -53,17 +55,12 @@ const app = new Elysia()
     )
     .post(
         "/todos",
-        ({ body }) => {
+        async ({ body }) => {
             if (body.content.length === 0) {
                 throw new Error("Content cannot be empty");
             }
-            const newTodo = {
-                id: lastID++,
-                content: body.content,
-                completed: false,
-            };
-            db.push(newTodo);
-            return <TodoItem {...newTodo} />;
+            const newTodo = await db.insert(todos).values({ content: body.content }).returning();
+            return <TodoItem {...newTodo.pop()} />;
         },
         {
             body: t.Object({
@@ -86,21 +83,6 @@ const BaseHtml = ({ children }: elements.Children) => `
 </head>
 ${children}
 </html> `;
-
-type Todo = {
-    id: number,
-    content: string,
-    completed: boolean,
-}
-
-let lastID = 5;
-
-const db: Todo[] = [
-    { id: 1, content: "Learn to create and setup the BETH stack.", completed: true },
-    { id: 2, content: "Create workshop", completed: true },
-    { id: 3, content: "??", completed: false },
-    { id: 4, content: "profit", completed: false }
-]
 
 function TodoForm() {
     return (

@@ -3,6 +3,7 @@
   "module": "index.ts",
   "devDependencies": {
     "bun-types": "latest",
+    "drizzle-kit": "^0.19.13",
     "typed-html": "^3.0.1"
   },
   "peerDependencies": {
@@ -11,6 +12,7 @@
   "type": "module",
   "dependencies": {
     "@elysiajs/html": "^0.7.0",
+    "drizzle-orm": "^0.28.6",
     "elysia": "^0.7.12"
   }
 }
