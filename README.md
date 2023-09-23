@@ -506,7 +506,7 @@ We will start with creating a `POST /todos` route to handle the creation of new 
       content: t.String(),
     }),
   }
-),
+)
 ```
 
 Notice the lastID variable, we don't have that yet. Let's create that just above our database (array) and use the id+1 that you have set last.
