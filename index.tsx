@@ -51,6 +51,26 @@ const app = new Elysia()
             }),
         }
     )
+    .post(
+        "/todos",
+        ({ body }) => {
+            if (body.content.length === 0) {
+                throw new Error("Content cannot be empty");
+            }
+            const newTodo = {
+                id: lastID++,
+                content: body.content,
+                completed: false,
+            };
+            db.push(newTodo);
+            return <TodoItem {...newTodo} />;
+        },
+        {
+            body: t.Object({
+                content: t.String(),
+            }),
+        }
+    )
     .listen(3000);
 console.log(`Elysia is running at http://${app.server?.hostname}:${app.server?.port}`);
 
@@ -73,12 +93,27 @@ type Todo = {
     completed: boolean,
 }
 
+let lastID = 5;
+
 const db: Todo[] = [
     { id: 1, content: "Learn to create and setup the BETH stack.", completed: true },
     { id: 2, content: "Create workshop", completed: true },
     { id: 3, content: "??", completed: false },
     { id: 4, content: "profit", completed: false }
 ]
+
+function TodoForm() {
+    return (
+        <form
+            class="flex flex-row space-x-3"
+            hx-post="/todos"
+            hx-swap="beforebegin"
+        >
+            <input type="text" name="content" class="border border-black" />
+            <button type="submit">Add</button>
+        </form>
+    );
+}
 
 function TodoItem({ content, completed, id }: Todo) {
     return (
@@ -106,6 +141,7 @@ function TodoList({ todos }: { todos: Todo[] }) {
             {todos.map((todo) => (
                 <TodoItem {...todo} />
             ))}
+            <TodoForm />
         </div>
     );
 }
