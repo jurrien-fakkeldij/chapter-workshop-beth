@@ -1,18 +1,16 @@
 # BETH Stack workshop
 
 ## Disclaimer
-I got inspiration (read: blatently copied the contents of this video, with a bit of my own flavour) from youtuber Ethan Niser at https://www.youtube.com/watch?v=cpzowDDJj24.
+I got inspiration (read: blatantly copied the contents of this video, with a bit of my own flavour) from youtuber Ethan Niser at https://www.youtube.com/watch?v=cpzowDDJj24.
 
-Just wanted to create a follow everything in a md for my team at work to easily copy and paste the code without having to type everything. Watch the video, it is all explained there as well I don't want to take credit for this whatsoever.
+Just wanted to create a follow everything in a MarkDown file for my team at work to easily copy and paste the code without having to type everything. Watch the video, it is all explained there as well I don't want to take credit for this whatsoever.
 
 ## BETH Stack
 So what is the BETH Stack and why do we want to use it? 
 
 Well this stack uses the tools and technologies explained below as well as some others that we will go through in the workshop itself (but are not as important to put in the acronym).
 
-For why do we want to use it, well it is fun to try something on somewhat bleeding edge and it shows a way to handle requests and responses using HTMX instead of html and rest.
-Now I hear some of you think: "didn't we do this with jsp / php pages already?". Well yes, but for that still the only way to get data was reload the entire page. With HTMX we are going to explore to do this on component level.
-Some others will say: "Will we ever use this in our daily jobs?". Probably not, doesn't make it unfun to try this out right?
+For why do we want to use it, it is fun to try out new technologies. See what they do and how they work. We will probably never use this in our day to day jobs at least I don't think so. But this does not mean we can't have a little bit of fun to try out these technologies.
 
 ### BUN
 Bun is an all-in-one toolkit for JavaScript and TypeScript apps. It ships as a single executable called bun​.
