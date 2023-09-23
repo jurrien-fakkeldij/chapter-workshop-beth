@@ -569,16 +569,16 @@ bun add -d drizzle-kit
 
 In the `db` folder we will create the `schema.ts` file with the following content.
 ```typescript
-import { InferModel } from "drizzle-orm";
+import { InferSelectModel } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const todos = sqliteTable("todos", {
-  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  content: text("content").notNull(),
-  completed: integer("completed", { mode: "boolean" }).notNull().default(false),
+    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    content: text("content").notNull(),
+    completed: integer("completed", { mode: "boolean" }).notNull().default(false),
 });
 
-export type Todo = InferModel<typeof todos>;
+export type Todo = InferSelectModel<typeof todos>;
 ```
 This is to describe our `todos` table and `todo` type later in our application.
 
