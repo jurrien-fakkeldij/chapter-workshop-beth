@@ -12,6 +12,7 @@
   "type": "module",
   "dependencies": {
     "@elysiajs/html": "^0.7.0",
+    "@libsql/client": "^0.3.4",
     "drizzle-orm": "^0.28.6",
     "elysia": "^0.7.12"
   }

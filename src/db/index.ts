@@ -1,10 +1,12 @@
-import { drizzle, BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
-import { Database } from 'bun:sqlite';
+import { drizzle, LibSQLDatabase } from 'drizzle-orm/libsql';
+import { createClient } from '@libsql/client'
 import * as schema from "./schema";
 
-const sqlite = new Database('todo.db', { create: true });
-sqlite.run(
-    "CREATE TABLE IF NOT EXISTS todos (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, content TEXT NOT NULL, completed INTEGER NOT NULL);"
-);
 
-export const db: BunSQLiteDatabase = drizzle(sqlite, { schema, logger: true });
+const client = createClient({
+    url: process.env.DATABASE_URL!,
+    authToken: process.env.DATABASE_AUTH_TOKEN,
+});
+
+export const db: LibSQLDatabase<typeof schema> = drizzle(client, { schema, logger: true });
+
