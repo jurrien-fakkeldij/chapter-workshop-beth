@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { html } from "@elysiajs/html";
 import * as elements from "typed-html";
 
@@ -22,6 +22,35 @@ const app = new Elysia()
             Now I am a div and not a button anymore returned from the server
         </div>
     ))
+    .post(
+        "/todos/toggle/:id",
+        ({ params }) => {
+            const todo = db.find((todo) => todo.id === params.id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                return <TodoItem {...todo} />;
+            }
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+        }
+    )
+    .delete(
+        "/todos/:id",
+        ({ params }) => {
+            const todo = db.find((todo => todo.id === params.id));
+            if (todo) {
+                db.splice(db.indexOf(todo), 1);
+            }
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+        }
+    )
     .listen(3000);
 console.log(`Elysia is running at http://${app.server?.hostname}:${app.server?.port}`);
 
@@ -53,10 +82,20 @@ const db: Todo[] = [
 
 function TodoItem({ content, completed, id }: Todo) {
     return (
-        <div class="flex flex-row space-x-3">
-            <p>{content}</p>
-            <input type="checkbox" checked={completed} />
-            <button class="text-red-500">X</button>
+        <div id={id.toString()} class="flex flex-row space-x-3">
+            <p>${content}</p>
+            <input
+                type="checkbox"
+                checked={completed}
+                hx-post={`/todos/toggle/${id}`}
+                hx-target="closest div"
+                hx-swap="outerHTML"
+            />
+            <button
+                class="text-red-500"
+                hx-delete={`/todos/${id}`}
+                hx-swap="outerHTML"
+                hx-target="closest div">X</button>
         </div>
     );
 }
