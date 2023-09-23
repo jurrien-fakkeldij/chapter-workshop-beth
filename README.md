@@ -329,10 +329,10 @@ Now we have all our tools and libraries in place (well we don't have a database 
 ### Add objects and components
 To have todo's we need to have a todo type, we can add this to the bottom of the file below our baseHtml in our index.tsx file.
 ``` typescript
-type Todo {
-  id: number;
-  content: string
-  completed: boolean
+type Todo = {
+    id: number,
+    content: string,
+    completed: boolean,
 }
 ```
 
