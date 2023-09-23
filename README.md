@@ -284,8 +284,44 @@ Further on there are css classes included in the components, you can ofcourse us
   Now I am a div and not a button anymore returned from the server
 </div>
 ```
+Now we should see the css in action. Our file up until now looks like the following.
+```typescript
+import { Elysia } from "elysia";
+import { html } from "@elysiajs/html";
+import * as elements from "typed-html";
 
-`TODO: INPUT TOTAL FILE HERE UP UNTIL NOW`
+const app = new Elysia()
+    .use(html())
+    .get("/", ({ html }) => html(
+        <BaseHtml>
+            <body class="flex w-full h-screen justify-center items-center">
+                <button class="border rounded" hx-post="/clicked" hx-swap="outerHTML">
+                    Click Me
+                </button>
+            </body>
+        </BaseHtml>
+    ))
+    .post("/clicked", () => (
+        <div class="text-blue-600">
+            Now I am a div and not a button anymore returned from the server
+        </div>
+    ))
+    .listen(3000);
+console.log(`Elysia is running at http://${app.server?.hostname}:${app.server?.port}`);
+
+const BaseHtml = ({ children }: elements.Children) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://unpkg.com/htmx.org@1.9.5" integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO" crossorigin="anonymous"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<title>Chapter Workshop</title>
+</head>
+${children}
+</html> `;
+```
 
 ## Let's create a todo app
 Now we have all our tools and libraries in place (well we don't have a database yet, but we will get to this later) let's create our actual Todo Application.
