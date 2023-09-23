@@ -684,24 +684,6 @@ DATABASE_URL=GET_THIS_FROM_ME_TO_CONNECT_TO_DB
 DATABASE_AUTH_TOKEN=GET_THIS_FROM_ME_FOR_MAGIC
 ```
 
-`TODO CHECK IF THE NEXT PASSAGE IS NEEDED!`
-We als need to create a drizzle.config.ts file in the root of the project to tell drizzle where to connect to using the earlier created environment variables.
-```typescript
-import type { Config } from "drizzle-kit";
-
-export default {
-    schema: "./src/db/schema.ts",
-    driver: "turso",
-    dbCredentials: {
-        url: process.env.DATABASE_URL,
-        authToken: process.env.DATABASE_AUTH_TOKEN,
-    },
-    verbose: true,
-    strict: true
-} satisfies Config;
-```
-`END TODO` 
-
 We don't have to change the schema, we do have to change our `index.ts` in the db folder. We are connecting using a different driver and library and we are using the earlier created environment variables.
 ```typescript
 import { drizzle, LibSQLDatabase } from 'drizzle-orm/libsql';
